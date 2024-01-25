@@ -55,6 +55,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
+        console.log('req.body: ',req.body)
         const {error} = validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);
         const {email, password} = req.body;

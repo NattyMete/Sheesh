@@ -23,7 +23,10 @@ const request = async (endpoint, options = {}) =>{
 export const registerUser = async (userData) => {
     try {
         userData = {...userData, 'profilePicture': userData.picture.name}
-        const res = await api.post("/auth/register", userData);
+        const res = await api.post("/auth/register", userData,{
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }});
         return res;
     } catch (error) {
         console.error(error);
@@ -32,6 +35,7 @@ export const registerUser = async (userData) => {
 }
 export const loginUser = async (userData) => {
     try {
+        console.log('userData: ',userData)
         const res = await api.post("/auth/login", userData);
         // console.log('token: ',res.headers.get('Authorization'))
         const token = res.headers['x-auth-token'];
@@ -51,4 +55,17 @@ export const getUserPosts = async (userId) => {
       throw error;
     }
   };
-
+export const updateProfile = async (userId, userData) => {
+    try {
+        console.log("userId: ", userId)
+        const token = localStorage.getItem("token");
+        const res = await api.patch(`/users/${userId}/profile`, userData, {
+            headers: {
+                'x-auth-token': token
+            }
+        });
+        return res;
+    } catch (error) {
+        console.error(error);
+    }
+}

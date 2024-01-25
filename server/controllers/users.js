@@ -2,6 +2,7 @@ import {User} from "../models/user.js"
 import lodash from "lodash"
 export const getUser = async (req, res) => {
     try{
+        console.log("req.params.id",req.params.id)
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json("User not found");
         const {password, updatedAt, ...other} = user._doc;
@@ -59,5 +60,26 @@ export const addRemoveFriend = async (req, res) => {
 
     }catch(err){
         res.status(500).json(err);
+    }
+}
+export const updateProfile = async (req, res) => {
+    // const userId = req.params.id;
+    const {id} = req.params;
+    console.log("id",req.params)
+    const {firstName, lastName, location, occupation, bio} = req.body;
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json("User not found");
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (location) user.location = location;
+        if (occupation) user.occupation = occupation;
+        if (bio) user.bio = bio;
+        await user.save();
+        const {password, updatedAt, ...other} = user._doc;
+        res.status(200).json(other);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(error);
     }
 }
