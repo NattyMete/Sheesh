@@ -1,5 +1,5 @@
 import { LOGIN_SUCCESS, LOGIN_FAIL, UPDATE_PROFILE_SUCCESS } from '../actions/authActions';
-import { updateProfile } from '../services/api';
+// import { updateProfile } from '../services/api';
 
 const initialState = {
     user: {},

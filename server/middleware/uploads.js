@@ -12,6 +12,12 @@ cloudinary.config(cloudinaryConfig);
 
 export const uploadImage = async (req, res, next) => {
     try {
+        console.log('uploading image...')
+        console.log('req.file: ',req.file) 
+        if (!req.file) {
+            // return res.status(400).send('Please upload a file'); 
+            next();
+        }
         const timestamp = Math.round(new Date().getTime() / 1000);
         const signature = cloudinary.utils.api_sign_request(
             {
@@ -25,10 +31,10 @@ export const uploadImage = async (req, res, next) => {
             timestamp: timestamp,
             api_key: config.get('api_key'),
         };
-
+        console.log('api_key: ',config.get('api_secret'))
         const data = {
             payload: payload,
-            file: req.file.buffer,
+            file: req.file.buffer || req.file.path,
         };
 
         const upload = cloudinary.uploader.upload_stream((error, result) => {

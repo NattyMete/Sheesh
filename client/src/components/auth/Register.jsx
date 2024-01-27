@@ -20,6 +20,7 @@ const Register = function () {
   const handleRegister = async () => {
     try {
       setLoading(true);
+      console.log('Registering user:', formData);
       const res = await registerUser(formData);
       if (res.status === 200) {
         console.log('Registration successful!');
@@ -45,6 +46,7 @@ const Register = function () {
   const handleChange = (e) => {
     // For file input, use e.target.files to get the selected file(s)
     if (e.target.type === 'file') {
+      console.log('file selected', e.target.files[0])
       setFormData({ ...formData, [e.target.name]: e.target.files[0] });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });

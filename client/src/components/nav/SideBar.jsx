@@ -2,9 +2,8 @@ import React from 'react';
 
 const Sidebar = () => {
   return (
-    <div className="h-full text-gray-800 p-4">
-      <div className="text-2xl font-bold mb-6">Your App Name</div>
-      <nav>
+    <div className="flex h-full text-gray-800 p-4 w-[200px] ">
+      <nav className=''>
         <ul>
           <li className="mb-2">
             <a href="#" className="flex items-center text-gray-600 hover:text-cyan-600">

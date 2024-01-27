@@ -21,7 +21,8 @@ const corsOptions = {
   };
 dotenv.config();
 const app = express();
-app.use(express.json());
+// app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(helmet());
 app.use(morgan("common"));
 app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin"}));

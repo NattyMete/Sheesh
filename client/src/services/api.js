@@ -48,7 +48,7 @@ export const loginUser = async (userData) => {
 }
 export const getUserPosts = async (userId) => {
     try {
-      const res = await api.get(`${API_BASE_URL}/${userId}/posts`);
+      const res = await api.get(`${API_BASE_URL}/posts/${userId}`);
       return res;
     } catch (error) {
       console.error('Error fetching user posts:', error);
@@ -62,6 +62,34 @@ export const updateProfile = async (userId, userData) => {
         const res = await api.patch(`/users/${userId}/profile`, userData, {
             headers: {
                 'x-auth-token': token
+            }
+        });
+        return res;
+    } catch (error) {
+        console.error(error);
+    }
+}
+export const getUser = async (userId) => {
+    try {
+        const token = localStorage.getItem("token");
+        const res = await api.get(`/users/${userId}`, {
+            headers: {
+                'x-auth-token': token
+            }
+        });
+        return res;
+    } catch (error) {
+        console.error(error);
+    }
+}
+export const createPost = async (userId, postData) => {
+    try {
+        const token = localStorage.getItem("token");
+        postData = {...postData, 'picturePath': postData.picture.name, 'userId': userId}
+        const res = await api.post(`/posts`, postData, {
+            headers: {
+                'x-auth-token': token,
+                'Content-Type': 'multipart/form-data'
             }
         });
         return res;

@@ -3,24 +3,31 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getUserPosts } from "../../services/api";
 import EditProfileForm from "./EditProfileForm";
+import Post from "../posts/Post";
+import CreatePost from "../posts/CreatePost";
 // import Sidebar from "../nav/SideBar";
 
 const UserProfile = () => {
   // Assuming your Redux store contains user information
   const user = useSelector((state) => state.auth.user);
-  console.log(user);
   const { userId } = useParams();
-  console.log(userId);
 
   const [posts, setPosts] = useState([]); // [post1, post2, post3
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const handleEditProfileClick = () => {
     setIsEditProfileModalOpen(true);
   };
 
   const handleEditProfileClose = () => {
     setIsEditProfileModalOpen(false);
+  };
+  const handleNewPostClick = () => {
+    console.log("New Post Clicked");
+    setIsCreatePostModalOpen(true);
+  };
+  const handleNewPostClose = () => {
+    setIsCreatePostModalOpen(false);
   };
 
   useEffect(() => {
@@ -31,7 +38,6 @@ const UserProfile = () => {
         if (res.status === 200) {
           console.log("Posts fetched successfully!");
           setPosts(res.data);
-          console.log("posts: ", posts);
         } else {
           console.log("No posts!");
           // console.log("posts: ", posts)
@@ -43,33 +49,34 @@ const UserProfile = () => {
       }
     };
     fetchData();
-  }, [userId]);
+  }, [userId, isCreatePostModalOpen]);
 
   return (
     <>
-      <div class="flex bg-gray-200 p-8 rounded-lg shadow-md w-full h-max">
-        <img
-          src={user.profilePicture}
-          alt="User Avatar"
-          class=" w-48 h-48 rounded-full mb-4"
-        />
-        <div className=" m-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {user.firstName + " " + user.lastName}
-          </h2>
-          <p className="text-gray-600 mb-2">{user.friends.length} Friends</p>
-          <div className="mt-4">
-          {user.location && (
-            <div className="mt-2">
-            <p className="text-gray-700 font-semibold">Location</p>
-            <p className="text-gray-600">{user.location}</p>
-            </div>
-            )}
-            {user.occupation && (
-              <div className="mt-2">
-              <p className="text-gray-700 font-semibold">Occupation</p>
-              <p className="text-gray-600">{user.occupation}</p>
-              </div>
+      <div className=" max-w-[75%] md:w-[70%]">
+        <div class="flex bg-gray-200 p-8 rounded-lg shadow-md w-3/4 h-max">
+          <img
+            src={user.profilePicture}
+            alt="User Avatar"
+            class=" w-48 h-48 rounded-full mb-4"
+          />
+          <div className=" m-4">
+            <h2 className="text-2xl font-bold text-gray-800">
+              {user.firstName + " " + user.lastName}
+            </h2>
+            <p className="text-gray-600 mb-2">{user.friends.length} Friends</p>
+            <div className="mt-4">
+              {user.location && (
+                <div className="mt-2">
+                  <p className="text-gray-700 font-semibold">Location</p>
+                  <p className="text-gray-600">{user.location}</p>
+                </div>
+              )}
+              {user.occupation && (
+                <div className="mt-2">
+                  <p className="text-gray-700 font-semibold">Occupation</p>
+                  <p className="text-gray-600">{user.occupation}</p>
+                </div>
               )}
               {user.bio && (
                 <div className="mt-2">
@@ -77,18 +84,42 @@ const UserProfile = () => {
                   <p className="text-gray-600">{user.bio}</p>
                 </div>
               )}
-              </div>
+            </div>
 
-          <button
-            className="bg-blue-500 text-white px-4 py-2 mt-4 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-            onClick={handleEditProfileClick}
-          >
-            Edit Profile
-          </button>
-          <EditProfileForm
-            isOpen={isEditProfileModalOpen}
-            onClose={handleEditProfileClose}
-          />
+            <button
+              className="bg-blue-500 text-white px-4 py-2 mt-4 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+              onClick={handleEditProfileClick}
+            >
+              Edit Profile
+            </button>
+            <EditProfileForm
+              isOpen={isEditProfileModalOpen}
+              onClose={handleEditProfileClose}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 w-3/4 h-max gap-4">
+          {posts.length ? (
+            posts.map((post) => <Post key={post._id} post={post} UpdatePosts={()=>setPosts} />)
+          ) : (
+            <div className="col-span-1 flex flex-col items-center justify-start mt-6">
+              <p className="text-center text-gray-600 font-bold text-xl mb-4">
+                No posts yet!
+              </p>
+              <button 
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              onClick={handleNewPostClick}
+              >
+                New Post
+              </button>
+              <CreatePost 
+              isOpen={isCreatePostModalOpen}
+              onClose={handleNewPostClose}
+              userId={userId}
+              setPosts={setPosts}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>
