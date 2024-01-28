@@ -3,7 +3,7 @@ import Joi from "joi"
 const UserSchema = new mongoose.Schema(
     {
         firstName: {
-            type: String,
+            type: String, 
             required: true,
             minlength: 2,
             maxlength: 50
